@@ -2,10 +2,8 @@
 Genera derivados sin modificar data/raw.
 """
 from pathlib import Path
-import sys
 import numpy as np
 import pandas as pd
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / '.deps'))
 import matplotlib.pyplot as plt
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
