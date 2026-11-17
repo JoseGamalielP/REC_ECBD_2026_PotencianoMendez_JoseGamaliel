@@ -13,12 +13,14 @@ Este repositorio no corresponde a la asignatura Aplicaciones Web Progresivas.
 
 ## Estado y entrega actual
 
+Unidad II: exploración y diagnóstico documentados en un notebook Jupyter ejecutado y en un informe. Se revisan las variables, tipos, valores `-200`, duplicados, estadísticas, valores atípicos, gráficas y correlaciones. El notebook conserva una sola versión ejecutable y no modifica el archivo original.
+
 Unidad I: planeación formal del análisis. Se verificó el original en modo lectura y se documentaron el problema, objetivos, herramientas, CRISP-DM, análisis posteriores y cronograma.
 
 - [Planeación de Unidad I en PDF](docs/PotencianoMendez_JoseGamaliel_U1_PlaneacionProyecto.pdf).
 - [Versión editable del contenido en Markdown](docs/U1_PlaneacionProyecto.md).
 - Entrega de Unidad I: **2 de octubre de 2026**; valor de la actividad según la guía: 20% del proyecto de recursamiento.
-- En esta entrega **no se ha realizado limpieza, ETL, entrenamiento, clasificación, clustering, PCA, Data Warehouse ni dashboard**. Las actividades analíticas descritas son propuestas para etapas posteriores.
+- La limpieza, el ETL, el entrenamiento de modelos, la clasificación, el clustering, PCA, el Data Warehouse y el dashboard se mantienen como etapas posteriores. Los archivos derivados que aparecen en la plantilla son avances documentales o salidas preliminares y no sustituyen la validación de esas etapas.
 
 ## Problema y pregunta de análisis
 
