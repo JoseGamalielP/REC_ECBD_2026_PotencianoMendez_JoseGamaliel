@@ -15,6 +15,17 @@ Este repositorio no corresponde a la asignatura Aplicaciones Web Progresivas.
 
 Unidad II: exploración y diagnóstico documentados en un notebook Jupyter ejecutado y en un informe. Se revisan las variables, tipos, valores `-200`, duplicados, estadísticas, valores atípicos, gráficas y correlaciones. El notebook conserva una sola versión ejecutable y no modifica el archivo original.
 
+## Avance integrado del proyecto
+
+- **ETL:** proceso reproducible en [`src/etl_air_quality.py`](src/etl_air_quality.py), con salida en [`data/processed/air_quality_etl.csv`](data/processed/air_quality_etl.csv).
+- **Data Mart:** esquema en [`sql/data_mart_schema.sql`](sql/data_mart_schema.sql) y base SQLite en [`data/processed/air_quality_datamart.sqlite`](data/processed/air_quality_datamart.sqlite).
+- **Carga del Data Mart:** [`src/load_datamart.py`](src/load_datamart.py).
+- **Exploración U2:** [`notebooks/PotencianoMendez_JoseGamaliel_U2_AE1_Exploracion.ipynb`](notebooks/PotencianoMendez_JoseGamaliel_U2_AE1_Exploracion.ipynb) e informe en [`docs/PotencianoMendez_JoseGamaliel_U2_AE1_Diagnostico.pdf`](docs/PotencianoMendez_JoseGamaliel_U2_AE1_Diagnostico.pdf).
+- **Modelos U3:** [`notebooks/PotencianoMendez_JoseGamaliel_U3_Modelos.ipynb`](notebooks/PotencianoMendez_JoseGamaliel_U3_Modelos.ipynb), con regresión lineal, clasificación logística, clustering y PCA ejecutados.
+- **Dashboard:** archivo [`dashboard/AirQuality_Dashboard.pbix`](dashboard/AirQuality_Dashboard.pbix), tablas exportadas para Power BI en [`data/processed/powerbi/`](data/processed/powerbi/) y evidencia en [`docs/evidencias/dashboard_calidad_aire.png`](docs/evidencias/dashboard_calidad_aire.png).
+
+Los resultados de los modelos son preliminares y se documentan con sus métricas reales. El dashboard utiliza bandas académicas de CO, no límites sanitarios oficiales.
+
 Unidad I: planeación formal del análisis. Se verificó el original en modo lectura y se documentaron el problema, objetivos, herramientas, CRISP-DM, análisis posteriores y cronograma.
 
 - [Planeación de Unidad I en PDF](docs/PotencianoMendez_JoseGamaliel_U1_PlaneacionProyecto.pdf).

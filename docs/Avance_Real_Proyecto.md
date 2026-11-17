@@ -2,7 +2,7 @@
 
 **Materia:** Extracción de Conocimiento en Bases de Datos (ECBD), Recursamiento 2026  
 **Proyecto:** Análisis y predicción de calidad del aire  
-**Fecha:** 27 de octubre de 2026
+**Fecha de actualización:** 16 de noviembre de 2026
 
 ## 1. Preparación de datos
 
@@ -49,6 +49,10 @@ Se formaron 3 grupos con las variables sensor/ambiente. El coeficiente de siluet
 ## 5. Conclusión preliminar
 
 Las variables de sensores y ambiente contienen información útil para estimar CO(GT). Las bandas tienen tamaños diferentes, por lo que la clasificación debe interpretarse con cuidado. El clustering y PCA permiten explorar patrones, pero no representan categorías sanitarias. Este avance es preliminar y debe complementarse con revisión de calidad, comparación de periodos y explicación de limitaciones.
+
+## 6. Dashboard y Data Mart
+
+Se construyó un Data Mart SQLite con dimensión de tiempo, dimensión de sensores y tabla de hechos. El dashboard inicial de Power BI muestra promedios de CO y NO2, distribución por banda, relación entre CO y PT08.S1(CO), y filtros por año, mes y banda de CO.
 
 ## Archivos generados
 
