@@ -6,12 +6,14 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 ETL = ROOT / "data" / "processed" / "air_quality_etl.csv"
 DB = ROOT / "data" / "processed" / "air_quality_datamart.sqlite"
+PBI = ROOT / "data" / "processed" / "powerbi"
 
 
 def main() -> None:
     df = pd.read_csv(ETL, parse_dates=["DateTime"])
     DB.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(DB) as con:
+        con.executescript("DROP TABLE IF EXISTS hecho_calidad_aire; DROP TABLE IF EXISTS dim_sensor; DROP TABLE IF EXISTS dim_tiempo;")
         con.executescript((ROOT / "sql" / "data_mart_schema.sql").read_text(encoding="utf-8"))
 
         time_dim = (
@@ -79,11 +81,16 @@ def main() -> None:
             "banda_co",
         ]
         fact[cols].to_sql("hecho_calidad_aire", con, if_exists="append", index=False)
+        PBI.mkdir(parents=True, exist_ok=True)
+        time_dim[["tiempo_id", "fecha", "hora", "mes", "anio"]].to_csv(PBI / "dim_tiempo.csv", index=False, encoding="utf-8-sig")
+        sensors.to_csv(PBI / "dim_sensor.csv", index=False, encoding="utf-8-sig")
+        fact[cols].to_csv(PBI / "hecho_calidad_aire.csv", index=False, encoding="utf-8-sig")
         counts = {
             table: con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
             for table in ["dim_tiempo", "dim_sensor", "hecho_calidad_aire"]
         }
     print(f"Data Mart creado: {DB}")
+    print(f"Archivos para Power BI: {PBI}")
     print(counts)
 
 

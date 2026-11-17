@@ -1,0 +1,6 @@
+﻿sensor_id,nombre_sensor,contaminante_nominal
+1,PT08.S1(CO),CO
+2,PT08.S2(NMHC),NMHC
+3,PT08.S3(NOx),NOx
+4,PT08.S4(NO2),NO2
+5,PT08.S5(O3),O3
