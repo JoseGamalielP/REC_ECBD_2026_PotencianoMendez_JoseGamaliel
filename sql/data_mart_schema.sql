@@ -29,5 +29,6 @@ CREATE TABLE hecho_calidad_aire (
     temperatura REAL,
     humedad_relativa REAL,
     humedad_absoluta REAL,
+    banda_co TEXT,
     FOREIGN KEY (tiempo_id) REFERENCES dim_tiempo(tiempo_id)
 );
