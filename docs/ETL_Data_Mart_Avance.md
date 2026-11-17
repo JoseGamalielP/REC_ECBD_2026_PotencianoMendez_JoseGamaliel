@@ -21,5 +21,9 @@ El esquema SQL contiene una dimensión de tiempo (`dim_tiempo`), una dimensión 
 - `src/etl_air_quality.py`: proceso ETL reproducible.
 - `data/processed/air_quality_etl.csv`: salida derivada; no reemplaza el original.
 - `sql/data_mart_schema.sql`: esquema inicial del Data Mart.
+- `src/load_datamart.py`: carga las tablas del Data Mart.
+- `data/processed/air_quality_datamart.sqlite`: base SQLite generada con las tablas cargadas.
+
+La carga verificada contiene 9,357 filas en `dim_tiempo`, 5 sensores en `dim_sensor` y 9,357 mediciones relacionadas en `hecho_calidad_aire`, sin mediciones huérfanas.
 
 Esta etapa no entrena modelos y no modifica `data/raw/`.
