@@ -27,6 +27,89 @@ BEGIN
 END;
 GO
 
+/* Etapas separadas para que el flujo de Integration Services sea visible y explicable. */
+CREATE OR ALTER PROCEDURE dbo.usp_etl_01_extraer_staging
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        DELETE FROM dbo.hecho_calidad_aire;
+        DELETE FROM dbo.dim_tiempo;
+        TRUNCATE TABLE dbo.stg_air_quality;
+        BULK INSERT dbo.stg_air_quality
+        FROM 'C:\REC_ECBD_2026_PotencianoMendex_JoseGamaliel\data\raw\air+quality\AirQualityUCI.csv'
+        WITH (FIRSTROW = 2, FIELDTERMINATOR = ';', ROWTERMINATOR = '0x0a', CODEPAGE = '65001', TABLOCK);
+        COMMIT TRANSACTION;
+        SELECT COUNT(*) AS registros_staging FROM dbo.stg_air_quality;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_etl_02_cargar_dim_tiempo
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.dim_tiempo;
+    ;WITH fechas AS (
+        SELECT TRY_CONVERT(date, fecha_txt, 103) AS fecha,
+               TRY_CONVERT(tinyint, LEFT(hora_txt, 2)) AS hora
+        FROM dbo.stg_air_quality
+    ), validas AS (
+        SELECT *, ROW_NUMBER() OVER (ORDER BY fecha, hora) AS tiempo_id
+        FROM fechas WHERE fecha IS NOT NULL AND hora IS NOT NULL
+    )
+    INSERT INTO dbo.dim_tiempo (tiempo_id, fecha, hora, mes, anio)
+    SELECT tiempo_id, fecha, hora, MONTH(fecha), YEAR(fecha) FROM validas;
+    SELECT COUNT(*) AS registros_dim_tiempo FROM dbo.dim_tiempo;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.usp_etl_03_cargar_hecho
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.hecho_calidad_aire;
+    ;WITH n AS (
+        SELECT TRY_CONVERT(date, fecha_txt, 103) AS fecha,
+               TRY_CONVERT(tinyint, LEFT(hora_txt, 2)) AS hora,
+               TRY_CONVERT(float, REPLACE(NULLIF(co_txt, '-200'), ',', '.')) AS co_gt,
+               TRY_CONVERT(float, REPLACE(NULLIF(pt08_s1_co_txt, '-200'), ',', '.')) AS pt08_s1_co,
+               TRY_CONVERT(float, REPLACE(NULLIF(nmhc_txt, '-200'), ',', '.')) AS nmhc_gt,
+               TRY_CONVERT(float, REPLACE(NULLIF(c6h6_txt, '-200'), ',', '.')) AS c6h6_gt,
+               TRY_CONVERT(float, REPLACE(NULLIF(pt08_s2_nmhc_txt, '-200'), ',', '.')) AS pt08_s2_nmhc,
+               TRY_CONVERT(float, REPLACE(NULLIF(nox_txt, '-200'), ',', '.')) AS nox_gt,
+               TRY_CONVERT(float, REPLACE(NULLIF(pt08_s3_nox_txt, '-200'), ',', '.')) AS pt08_s3_nox,
+               TRY_CONVERT(float, REPLACE(NULLIF(no2_txt, '-200'), ',', '.')) AS no2_gt,
+               TRY_CONVERT(float, REPLACE(NULLIF(pt08_s4_no2_txt, '-200'), ',', '.')) AS pt08_s4_no2,
+               TRY_CONVERT(float, REPLACE(NULLIF(pt08_s5_o3_txt, '-200'), ',', '.')) AS pt08_s5_o3,
+               TRY_CONVERT(float, REPLACE(NULLIF(temperatura_txt, '-200'), ',', '.')) AS temperatura,
+               TRY_CONVERT(float, REPLACE(NULLIF(humedad_relativa_txt, '-200'), ',', '.')) AS humedad_relativa,
+               TRY_CONVERT(float, REPLACE(NULLIF(humedad_absoluta_txt, '-200'), ',', '.')) AS humedad_absoluta
+        FROM dbo.stg_air_quality
+    ), v AS (
+        SELECT *, ROW_NUMBER() OVER (ORDER BY fecha, hora) AS medicion_id
+        FROM n WHERE fecha IS NOT NULL AND hora IS NOT NULL
+    )
+    INSERT INTO dbo.hecho_calidad_aire
+    (medicion_id, tiempo_id, co_gt, nmhc_gt, c6h6_gt, nox_gt, no2_gt,
+     pt08_s1_co, pt08_s2_nmhc, pt08_s3_nox, pt08_s4_no2, pt08_s5_o3,
+     temperatura, humedad_relativa, humedad_absoluta, banda_co)
+    SELECT medicion_id, medicion_id, co_gt, nmhc_gt, c6h6_gt, nox_gt, no2_gt,
+           pt08_s1_co, pt08_s2_nmhc, pt08_s3_nox, pt08_s4_no2, pt08_s5_o3,
+           temperatura, humedad_relativa, humedad_absoluta,
+           CASE WHEN co_gt IS NULL THEN NULL WHEN co_gt < 1 THEN N'Baja'
+                WHEN co_gt < 3 THEN N'Media' ELSE N'Alta' END
+    FROM v;
+    SELECT COUNT(*) AS registros_hecho FROM dbo.hecho_calidad_aire;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE dbo.usp_cargar_air_quality_full
 AS
 BEGIN

@@ -1,8 +1,13 @@
 # ETL con SQL Server Integration Services
 
-Se creó el proyecto `ssis/AirQuality_SSIS` con un paquete `Package.dtsx`. El paquete contiene la tarea **ETL AirQuality - Carga Full**, que se conecta a `localhost`, base `AirQualityDW`, y ejecuta `dbo.usp_cargar_air_quality_full`.
+Se creó el proyecto `ssis/AirQuality_SSIS` con un paquete `Package.dtsx`. El paquete se conecta a `localhost`, base `AirQualityDW`, y muestra cuatro etapas encadenadas:
 
-El procedimiento realiza la carga completa reproducible: vacía hechos y tiempo, carga el CSV original a staging, convierte `-200` en nulos, transforma fecha/hora, calcula `banda_co` y carga `dim_tiempo` y `hecho_calidad_aire`. `dim_sensor` conserva los cinco sensores documentados.
+1. `01 Extracción CSV a Staging` carga el archivo original en `stg_air_quality`.
+2. `02 Transformar y cargar dim_tiempo` normaliza fecha/hora y llena la dimensión de tiempo.
+3. `03 Transformar y cargar hecho_calidad_aire` convierte faltantes, calcula `banda_co` y llena la tabla de hechos.
+4. `Validar carga del Data Mart` comprueba que no existan duplicados.
+
+Las tres primeras tareas llaman procedimientos SQL separados para que el flujo sea visible y explicable. `dim_sensor` conserva los cinco sensores documentados.
 
 La ejecución validada cargó **9,357 registros**. Al repetirla se obtuvieron nuevamente **9,357** en la dimensión de tiempo y la tabla de hechos, sin duplicados.
 

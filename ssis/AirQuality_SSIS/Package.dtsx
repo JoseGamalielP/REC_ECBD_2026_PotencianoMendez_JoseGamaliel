@@ -32,20 +32,28 @@
   <DTS:Variables />
   <DTS:Executables>
     <DTS:Executable
-      DTS:refId="Package\ETL AirQuality - Carga Full"
+      DTS:refId="Package\01 Extracción CSV a Staging"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:Description="Ejecuta staging, transformacion, dimensiones y hecho sin duplicados."
+      DTS:Description="Extrae el CSV original y lo carga en la tabla staging."
       DTS:DTSID="{B0B44D10-5012-4CE8-BE2A-BD13E1F32A3B}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="ETL AirQuality - Carga Full"
+      DTS:ObjectName="01 Extracción CSV a Staging"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}"
-          SQLTask:SqlStatementSource="EXEC dbo.usp_cargar_air_quality_full;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="EXEC dbo.usp_etl_01_extraer_staging;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:refId="Package\02 Transformar y cargar dim_tiempo" DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:Description="Normaliza fecha y hora y carga la dimensión de tiempo." DTS:DTSID="{F4E6B7A9-9E1B-4E5F-8B2F-4F2F2EAA2D11}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="02 Transformar y cargar dim_tiempo" DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData><SQLTask:SqlTaskData SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" SQLTask:SqlStatementSource="EXEC dbo.usp_etl_02_cargar_dim_tiempo;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" /></DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable DTS:refId="Package\03 Transformar y cargar hecho_calidad_aire" DTS:CreationName="Microsoft.ExecuteSQLTask" DTS:Description="Convierte valores, calcula banda CO y carga la tabla de hechos." DTS:DTSID="{D4A9E0C2-9D14-4B01-86E7-83F2F4F8C109}" DTS:ExecutableType="Microsoft.ExecuteSQLTask" DTS:LocaleID="-1" DTS:ObjectName="03 Transformar y cargar hecho_calidad_aire" DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData><SQLTask:SqlTaskData SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" SQLTask:SqlStatementSource="EXEC dbo.usp_etl_03_cargar_hecho;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" /></DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\Validar carga del Data Mart"
@@ -65,15 +73,17 @@
     </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint DTS:refId="Package.PrecedenceConstraints[Extraccion a tiempo]" DTS:CreationName="" DTS:DTSID="{A1F1D1B2-0C7C-4B0B-9A70-1E1B54EA8C90}" DTS:From="Package\01 Extracción CSV a Staging" DTS:To="Package\02 Transformar y cargar dim_tiempo" DTS:ObjectName="Extraccion a tiempo" DTS:LogicalAnd="True" />
+    <DTS:PrecedenceConstraint DTS:refId="Package.PrecedenceConstraints[Tiempo a hecho]" DTS:CreationName="" DTS:DTSID="{B2F2E2C3-1D8D-4C1C-AA81-2F2C65FB9DA1}" DTS:From="Package\02 Transformar y cargar dim_tiempo" DTS:To="Package\03 Transformar y cargar hecho_calidad_aire" DTS:ObjectName="Tiempo a hecho" DTS:LogicalAnd="True" />
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[ETL to validation]"
       DTS:CreationName=""
       DTS:DTSID="{AB3B54EE-44F5-4D63-9A0E-A9EAF4F20430}"
-      DTS:From="Package\ETL AirQuality - Carga Full"
+      DTS:From="Package\03 Transformar y cargar hecho_calidad_aire"
       DTS:To="Package\Validar carga del Data Mart"
       DTS:ObjectName="ETL to validation"
       DTS:EvalOp="1"
-      DTS:Value="0" />
+      DTS:LogicalAnd="True" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
@@ -89,8 +99,11 @@
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
         <NodeLayout
           Size="202.4,41.6"
-          Id="Package\ETL AirQuality - Carga Full"
-          TopLeft="363.833313754864,223.899998481274" />
+          Id="Package\01 Extracción CSV a Staging"
+          TopLeft="120,100" />
+        <NodeLayout Size="230,41.6" Id="Package\02 Transformar y cargar dim_tiempo" TopLeft="120,190" />
+        <NodeLayout Size="250,41.6" Id="Package\03 Transformar y cargar hecho_calidad_aire" TopLeft="120,280" />
+        <NodeLayout Size="210,41.6" Id="Package\Validar carga del Data Mart" TopLeft="120,370" />
       </GraphLayout>
     </LayoutInfo>
   </Package>
