@@ -37,6 +37,6 @@ La dimensión de sensores documenta las cinco respuestas PT08. La tabla de hecho
 
 ## Plantilla visual
 
-Se incluye `dashboard/plantilla_dashboard_calidad_aire.png` como fondo de la página de Power BI. Está organizada con espacios para tres tarjetas superiores, gráficos principales, filtros y el título del proyecto. En Power BI se puede usar desde **Formato de página > Fondo de lienzo**, ajustar la transparencia a 0% y colocar los visuales dentro de los paneles blancos.
+Se incluye `dashboard/plantilla_dashboard_calidad_aire_v2.png` como plantilla recomendada para la página de Power BI. Está adaptada a las tablas y visualizaciones reales del proyecto: tres KPI, tendencia de CO, relación CO-sensor, bandas de CO, análisis de NO2 y filtros. La versión anterior queda como respaldo en `plantilla_dashboard_calidad_aire.png`. En Power BI se puede usar desde **Formato de página > Fondo de lienzo**, ajustar la transparencia a 0% y colocar los visuales dentro de los paneles blancos.
 
 El dashboard debe interpretar las bandas como etiquetas académicas del proyecto, no como límites sanitarios oficiales.
