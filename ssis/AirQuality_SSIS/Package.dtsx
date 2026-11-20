@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" DTS:refId="Package" DTS:CreationName="Microsoft.Package" DTS:ExecutableType="Microsoft.Package" DTS:DTSID="{EDE5759A-46C4-419A-84DF-A43BF120785A}" DTS:ObjectName="AirQuality ETL Full Load" DTS:PackageType="5" DTS:PackageFormatVersion="8">
+  <DTS:Variables />
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager DTS:refId="Package.ConnectionManagers[AirQualityDW]" DTS:CreationName="OLEDB" DTS:DTSID="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" DTS:ObjectName="AirQualityDW">
+      <DTS:ObjectData><DTS:ConnectionManager DTS:Name="AirQualityDW" DTS:ConnectionString="Data Source=localhost;Initial Catalog=AirQualityDW;Provider=MSOLEDBSQL;Integrated Security=SSPI;TrustServerCertificate=True;" /></DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Executables>
+    <DTS:Executable DTS:refId="Package\ETL AirQuality - Carga Full" DTS:CreationName="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=17.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" DTS:ExecutableType="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=17.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" DTS:DTSID="{B0B44D10-5012-4CE8-BE2A-BD13E1F32A3B}" DTS:ObjectName="ETL AirQuality - Carga Full" DTS:Description="Ejecuta staging, transformacion, dimensiones y hecho sin duplicados.">
+      <DTS:ObjectData><SQLTask:SqlTaskData SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" SQLTask:DatabaseName="AirQualityDW" SQLTask:SqlStatementSource="EXEC dbo.usp_cargar_air_quality_full;" SQLTask:ResultSetType="0" /></DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+</DTS:Executable>

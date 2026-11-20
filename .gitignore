@@ -1,5 +1,8 @@
 
 .deps/
+.vs/
+**/bin/
+**/obj/
 
 # Material personal de estudio; no forma parte de la entrega
 docs/Guia_Estudio_Proyecto_Air_Quality.txt

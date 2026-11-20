@@ -19,6 +19,8 @@ Unidad II: exploración y diagnóstico documentados en un notebook Jupyter ejecu
 
 - **ETL:** proceso reproducible en [`src/etl_air_quality.py`](src/etl_air_quality.py), con salida en [`data/processed/air_quality_etl.csv`](data/processed/air_quality_etl.csv).
 - **Data Mart:** esquema en [`sql/data_mart_schema.sql`](sql/data_mart_schema.sql) y base SQLite en [`data/processed/air_quality_datamart.sqlite`](data/processed/air_quality_datamart.sqlite).
+- **Data Mart SQL Server:** base `AirQualityDW` con `dim_sensor`, `dim_tiempo` y `hecho_calidad_aire`; esquema en [`sql/sqlserver_datamart_schema.sql`](sql/sqlserver_datamart_schema.sql).
+- **Integration Services:** paquete [`ssis/AirQuality_SSIS/Package.dtsx`](ssis/AirQuality_SSIS/Package.dtsx) que ejecuta la carga full reproducible mediante `dbo.usp_cargar_air_quality_full`; procedimiento en [`sql/etl_sqlserver_full_load.sql`](sql/etl_sqlserver_full_load.sql). La carga fue ejecutada dos veces y mantuvo 9,357 hechos sin duplicados.
 - **Carga del Data Mart:** [`src/load_datamart.py`](src/load_datamart.py).
 - **Exploración U2:** [`notebooks/PotencianoMendez_JoseGamaliel_U2_AE1_Exploracion.ipynb`](notebooks/PotencianoMendez_JoseGamaliel_U2_AE1_Exploracion.ipynb) e informe en [`docs/PotencianoMendez_JoseGamaliel_U2_AE1_Diagnostico.pdf`](docs/PotencianoMendez_JoseGamaliel_U2_AE1_Diagnostico.pdf).
 - **Modelos U3:** [`notebooks/PotencianoMendez_JoseGamaliel_U3_Modelos.ipynb`](notebooks/PotencianoMendez_JoseGamaliel_U3_Modelos.ipynb), con regresión lineal, clasificación logística, clustering y PCA ejecutados.
@@ -75,7 +77,7 @@ La ficha pública muestra CC BY 4.0 y, en su descripción histórica, una restri
 4. Versionar documentos y código con Git; registrar dependencias y semillas cuando comience la implementación.
 5. Registrar resultados reales, incluidos los negativos, sin fabricar métricas ni interpretar asociación como causalidad.
 
-Herramientas propuestas: Python 3, pandas, NumPy, openpyxl para lectura, scikit-learn, SQLite, Jupyter/VS Code, Matplotlib, Git y GitHub. No es necesario instalar paquetes ni ejecutar modelos para consultar esta entrega: abre el PDF en `docs` y el original de Excel en `data/raw`.
+Herramientas utilizadas: Python 3, pandas, NumPy, openpyxl, scikit-learn, SQLite, SQL Server 2025 Developer, SQL Server Integration Services, Jupyter/VS Code, Power BI, Matplotlib, Git y GitHub.
 
 ## Estructura de la plantilla
 
