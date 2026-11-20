@@ -67,3 +67,33 @@ GO
 SELECT DB_NAME() AS base_creada,
        (SELECT COUNT(*) FROM dbo.dim_sensor) AS sensores_cargados;
 GO
+
+/* Vista ligera para Power BI: reúne tiempo y hechos sin cargar todo el
+   modelo estrella cuando el tablero solo necesita estas columnas. */
+CREATE OR ALTER VIEW dbo.vw_powerbi_calidad_aire
+AS
+SELECT
+    h.medicion_id,
+    h.tiempo_id,
+    t.fecha,
+    t.anio,
+    t.mes,
+    t.hora,
+    h.co_gt,
+    h.nmhc_gt,
+    h.c6h6_gt,
+    h.nox_gt,
+    h.no2_gt,
+    h.pt08_s1_co,
+    h.pt08_s2_nmhc,
+    h.pt08_s3_nox,
+    h.pt08_s4_no2,
+    h.pt08_s5_o3,
+    h.temperatura,
+    h.humedad_relativa,
+    h.humedad_absoluta,
+    h.banda_co
+FROM dbo.hecho_calidad_aire AS h
+INNER JOIN dbo.dim_tiempo AS t
+    ON t.tiempo_id = h.tiempo_id;
+GO

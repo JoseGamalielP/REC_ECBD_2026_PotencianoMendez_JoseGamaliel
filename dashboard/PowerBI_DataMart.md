@@ -1,10 +1,19 @@
 # Conexión del Data Mart con Power BI
 
-Power BI Desktop está instalado en el equipo. La conexión preparada utiliza los tres CSV exportados desde el Data Mart, porque permite abrir el avance sin instalar un controlador adicional para SQLite.
+Power BI Desktop está instalado en el equipo. La conexión recomendada para la versión final utiliza SQL Server y la vista `dbo.vw_powerbi_calidad_aire` de la base `AirQualityDW`. La vista reúne las mediciones con la dimensión de tiempo y evita cargar todo el modelo estrella.
 
-## Archivos para cargar
+## Conexión recomendada
 
-En Power BI Desktop se usa **Obtener datos > Texto/CSV** para cargar:
+En Power BI Desktop seleccionar **Obtener datos > SQL Server**, indicar el servidor local usado por SQL Server y la base `AirQualityDW`. En el navegador seleccionar:
+
+- `dbo.vw_powerbi_calidad_aire` para el dashboard;
+- opcionalmente `dbo.dim_sensor` si se requiere mostrar el catálogo de sensores.
+
+La vista fue validada con 9,357 filas y se alimenta de `hecho_calidad_aire` y `dim_tiempo`.
+
+## Archivos de respaldo
+
+Si se necesita abrir el avance sin conexión a SQL Server, se pueden usar los CSV exportados:
 
 - `data/processed/powerbi/dim_tiempo.csv`
 - `data/processed/powerbi/dim_sensor.csv`
