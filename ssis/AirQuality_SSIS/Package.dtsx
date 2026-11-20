@@ -1,14 +1,98 @@
-<?xml version="1.0"?>
-<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" DTS:refId="Package" DTS:CreationName="Microsoft.Package" DTS:ExecutableType="Microsoft.Package" DTS:DTSID="{EDE5759A-46C4-419A-84DF-A43BF120785A}" DTS:ObjectName="AirQuality ETL Full Load" DTS:PackageType="5" DTS:PackageFormatVersion="8">
-  <DTS:Variables />
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/19/2026 11:08:28 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GAMA"
+  DTS:CreatorName="GAMA\gmen2"
+  DTS:DTSID="{EDE5759A-46C4-419A-84DF-A43BF120785A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="17.0.1016.0"
+  DTS:LocaleID="2058"
+  DTS:ObjectName="AirQuality ETL Full Load"
+  DTS:PackageType="5"
+  DTS:VersionBuild="1"
+  DTS:VersionGUID="{6BB8E102-859A-4CAF-8C33-95155A9780DF}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
-    <DTS:ConnectionManager DTS:refId="Package.ConnectionManagers[AirQualityDW]" DTS:CreationName="OLEDB" DTS:DTSID="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" DTS:ObjectName="AirQualityDW">
-      <DTS:ObjectData><DTS:ConnectionManager DTS:Name="AirQualityDW" DTS:ConnectionString="Data Source=localhost;Initial Catalog=AirQualityDW;Provider=MSOLEDBSQL;Integrated Security=SSPI;TrustServerCertificate=True;" /></DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[AirQualityDW]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}"
+      DTS:ObjectName="AirQualityDW">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=AirQualityDW;Provider=MSOLEDBSQL;Integrated Security=SSPI;TrustServerCertificate=True;" />
+      </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
+  <DTS:Variables />
   <DTS:Executables>
-    <DTS:Executable DTS:refId="Package\ETL AirQuality - Carga Full" DTS:CreationName="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=17.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" DTS:ExecutableType="Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask.ExecuteSQLTask, Microsoft.SqlServer.SQLTask, Version=17.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" DTS:DTSID="{B0B44D10-5012-4CE8-BE2A-BD13E1F32A3B}" DTS:ObjectName="ETL AirQuality - Carga Full" DTS:Description="Ejecuta staging, transformacion, dimensiones y hecho sin duplicados.">
-      <DTS:ObjectData><SQLTask:SqlTaskData SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}" SQLTask:DatabaseName="AirQualityDW" SQLTask:SqlStatementSource="EXEC dbo.usp_cargar_air_quality_full;" SQLTask:ResultSetType="0" /></DTS:ObjectData>
+    <DTS:Executable
+      DTS:refId="Package\ETL AirQuality - Carga Full"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Ejecuta staging, transformacion, dimensiones y hecho sin duplicados."
+      DTS:DTSID="{B0B44D10-5012-4CE8-BE2A-BD13E1F32A3B}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL AirQuality - Carga Full"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}"
+          SQLTask:SqlStatementSource="EXEC dbo.usp_cargar_air_quality_full;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Validar carga del Data Mart"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Comprueba que la carga terminó sin duplicados."
+      DTS:DTSID="{C8D8E1B4-C1B7-4F80-9D34-1CE9E7C1A3A0}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Validar carga del Data Mart"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{A17C9270-7B06-4CE6-8F8A-7F0D4D9F2F81}"
+          SQLTask:SqlStatementSource="IF (SELECT COUNT(*) FROM dbo.hecho_calidad_aire) &lt;&gt; (SELECT COUNT(DISTINCT medicion_id) FROM dbo.hecho_calidad_aire) THROW 51000, 'Se detectaron duplicados en la tabla de hechos.', 1;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
     </DTS:Executable>
   </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[ETL to validation]"
+      DTS:CreationName=""
+      DTS:DTSID="{AB3B54EE-44F5-4D63-9A0E-A9EAF4F20430}"
+      DTS:From="Package\ETL AirQuality - Carga Full"
+      DTS:To="Package\Validar carga del Data Mart"
+      DTS:ObjectName="ETL to validation"
+      DTS:EvalOp="1"
+      DTS:Value="0" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--Esta sección CDATA contiene la información de diseño del paquete. Esta sección incluye información como, por ejemplo, las coordenadas (x,y), el ancho y el alto.-->
+<!--Si edita manualmente esta sección y comete un error, puede eliminarlo. -->
+<!--El paquete podrá cargarse normalmente, pero se perderá la información de diseño anterior y el diseñador reorganizará los elementos automáticamente en la superficie de diseño.-->
+<Objects
+  Version="8">
+  <!--Cada uno de los nodos siguientes contiene propiedades que no afectan al comportamiento en tiempo de ejecución.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="202.4,41.6"
+          Id="Package\ETL AirQuality - Carga Full"
+          TopLeft="363.833313754864,223.899998481274" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
 </DTS:Executable>
